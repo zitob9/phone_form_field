@@ -94,7 +94,9 @@ class _PhoneFieldState extends State<PhoneField> {
 
   Widget _getCountryCodeChip() {
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: !controller.focusNode.hasFocus
+          ? SystemMouseCursors.text
+          : SystemMouseCursors.click,
       child: GestureDetector(
         onTap: selectCountry,
         child: Padding(
