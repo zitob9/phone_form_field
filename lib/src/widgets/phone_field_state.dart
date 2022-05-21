@@ -93,22 +93,25 @@ class _PhoneFieldState extends State<PhoneField> {
   }
 
   Widget _getCountryCodeChip() {
-    return InkWell(
-      onTap: selectCountry,
-      child: Padding(
-        padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
-        child: CountryCodeChip(
-          key: const ValueKey('country-code-chip'),
-          isoCode: controller.isoCode,
-          showFlag: widget.showFlagInInput,
-          textStyle: widget.countryCodeStyle ??
-              widget.decoration.labelStyle ??
-              TextStyle(
-                fontSize: 16,
-                color: Theme.of(context).textTheme.caption?.color,
-              ),
-          flagSize: widget.flagSize,
-          textDirection: widget.textDirection,
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        onTap: selectCountry,
+        child: Padding(
+          padding: const EdgeInsetsDirectional.fromSTEB(8, 0, 8, 0),
+          child: CountryCodeChip(
+            key: const ValueKey('country-code-chip'),
+            isoCode: controller.isoCode,
+            showFlag: widget.showFlagInInput,
+            textStyle: widget.countryCodeStyle ??
+                widget.decoration.labelStyle ??
+                TextStyle(
+                  fontSize: 16,
+                  color: Theme.of(context).textTheme.caption?.color,
+                ),
+            flagSize: widget.flagSize,
+            textDirection: widget.textDirection,
+          ),
         ),
       ),
     );
@@ -131,12 +134,14 @@ class _PhoneFieldState extends State<PhoneField> {
     final useSuffix = widget.textDirection == TextDirection.rtl &&
         widget.textDirection == null &&
         Directionality.of(context) == TextDirection.rtl;
-    return widget.decoration.copyWith(
-      hintText: null,
-      errorText: widget.errorText,
-      prefix: useSuffix ? null : _getCountryCodeChip(),
-      suffix: useSuffix ? _getCountryCodeChip() : null,
-    );
+    return widget.decoration
+        .applyDefaults(Theme.of(context).inputDecorationTheme)
+        .copyWith(
+          hintText: null,
+          errorText: widget.errorText,
+          prefix: useSuffix ? null : _getCountryCodeChip(),
+          suffix: useSuffix ? _getCountryCodeChip() : null,
+        );
   }
 
   bool _isEffectivelyEmpty() {

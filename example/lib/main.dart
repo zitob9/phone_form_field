@@ -255,6 +255,14 @@ class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                       ),
                     ),
                     const SizedBox(height: 12),
+                    TextFormField(
+                      decoration: InputDecoration(
+                        border: outlineBorder
+                            ? const OutlineInputBorder()
+                            : const UnderlineInputBorder(),
+                        label: const Text('dummy input'),
+                      ),
+                    ),
                     Text(controller.value.toString()),
                     Text('is valid mobile number '
                         '${controller.value?.validate(type: PhoneNumberType.mobile) ?? 'false'}'),
