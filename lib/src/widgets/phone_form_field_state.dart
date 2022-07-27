@@ -1,6 +1,6 @@
 part of 'phone_form_field.dart';
 
-class _PhoneFormFieldState extends FormFieldState<PhoneNumber> {
+class PhoneFormFieldState extends FormFieldState<PhoneNumber> {
   late final PhoneController _controller;
   late final PhoneFieldController _childController;
   late final StreamSubscription<void> _selectionSubscription;
@@ -20,8 +20,14 @@ class _PhoneFormFieldState extends FormFieldState<PhoneNumber> {
     _controller.addListener(_onControllerChange);
     _childController.addListener(() => _onChildControllerChange());
     // to expose text selection of national number
-    _selectionSubscription = _controller.selectionRequest$
+    _selectionSubscription = _controller.selectionRequestStream
         .listen((event) => _childController.selectNationalNumber());
+  }
+
+  @override
+  void didChangeDependencies() {
+    if (Directionality.of(context) == TextDirection.rtl) {}
+    super.didChangeDependencies();
   }
 
   @override
@@ -29,6 +35,7 @@ class _PhoneFormFieldState extends FormFieldState<PhoneNumber> {
     super.dispose();
     _childController.dispose();
     _selectionSubscription.cancel();
+    _controller.removeListener(_onControllerChange);
     // dispose the controller only when it's initialised in this instance
     // otherwise this should be done where instance is created
     if (widget.controller == null) {

@@ -11,6 +11,7 @@ class CountryCodeChip extends StatelessWidget {
   final TextStyle textStyle;
   final EdgeInsets padding;
   final double flagSize;
+  final TextDirection? textDirection;
 
   CountryCodeChip({
     Key? key,
@@ -20,6 +21,7 @@ class CountryCodeChip extends StatelessWidget {
     this.showDialCode = true,
     this.padding = const EdgeInsets.all(20),
     this.flagSize = 20,
+    this.textDirection,
   })  : country = Country(isoCode, ''),
         super(key: key);
 
@@ -39,6 +41,7 @@ class CountryCodeChip extends StatelessWidget {
           Text(
             country.displayCountryCode,
             style: textStyle,
+            textDirection: textDirection,
           ),
       ],
     );

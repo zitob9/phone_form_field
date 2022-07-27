@@ -1,3 +1,38 @@
+## [7.0.1] 27/07/2022
+- fix country code not shown when there is an hint
+- added `isCountryChipPersistent`
+- added `isCountrySelectionEnabled`
+
+## [7.0.0] 25/07/2022
+- [Breaking] Update phone_numbers_parser major version
+
+## [6.1.1] 22/07/2022
+- Readd RTL support
+- Removed diacritics from search
+- Added height and width to dialog
+
+## [6.1.0] 26/05/2022
+- Revert RTL support as it is incomplete. (Feel free to resubmit a PR).
+- Fix a country selection search input auto focus issue.
+- Removed the inkWell around country code, which now has thinner clicking area.
+  This was done to clean the internals.
+
+## [6.0.0] 14/05/2022
+- require flutter 3
+
+## [5.0.4] 11/05/2022
+- fix empty text direction bug
+
+## [5.0.3] 26/04/2022
+
+- correctly remove listener from controller on dispose.
+- fix error that happened when a controller was reused.
+
+## [5.0.2] 24/04/2022
+
+- added el language (@kwstasarva)
+- added rtl text direction support (@minusium)
+
 ## [5.0.1] 05/04/2022
 - fix inkwell overflow on error
 - update docs

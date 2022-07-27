@@ -17,8 +17,9 @@ class PhoneFieldView extends StatelessWidget {
   final bool withLabel;
   final bool outlineBorder;
   final bool shouldFormat;
-  final bool required;
+  final bool isCountryChipPersistent;
   final bool mobileOnly;
+  final bool useRtl;
 
   const PhoneFieldView({
     Key? key,
@@ -28,15 +29,13 @@ class PhoneFieldView extends StatelessWidget {
     required this.withLabel,
     required this.outlineBorder,
     required this.shouldFormat,
-    required this.required,
+    required this.isCountryChipPersistent,
     required this.mobileOnly,
+    required this.useRtl,
   }) : super(key: key);
 
   PhoneNumberInputValidator? _getValidator() {
     List<PhoneNumberInputValidator> validators = [];
-    if (required) {
-      validators.add(PhoneValidator.required());
-    }
     if (mobileOnly) {
       validators.add(PhoneValidator.validMobile());
     } else {
@@ -48,30 +47,35 @@ class PhoneFieldView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutofillGroup(
-      child: PhoneFormField(
-        key: inputKey,
-        controller: controller,
-        shouldFormat: shouldFormat,
-        autofocus: true,
-        autofillHints: const [AutofillHints.telephoneNumber],
-        countrySelectorNavigator: selectorNavigator,
-        defaultCountry: IsoCode.US,
-        decoration: InputDecoration(
-          label: withLabel ? const Text('Phone') : null,
-          border: outlineBorder
-              ? const OutlineInputBorder()
-              : const UnderlineInputBorder(),
-          hintText: withLabel ? '' : 'Phone',
+      child: Directionality(
+        textDirection: useRtl ? TextDirection.rtl : TextDirection.ltr,
+        child: PhoneFormField(
+          key: inputKey,
+          // controller: controller,
+          shouldFormat: shouldFormat && !useRtl,
+          autofocus: true,
+          initialValue: PhoneNumber.fromRaw('+336787678'),
+          autofillHints: const [AutofillHints.telephoneNumber],
+          countrySelectorNavigator: selectorNavigator,
+          defaultCountry: IsoCode.US,
+          decoration: InputDecoration(
+            label: withLabel ? const Text('Phone') : null,
+            border: outlineBorder
+                ? const OutlineInputBorder()
+                : const UnderlineInputBorder(),
+            hintText: withLabel ? '' : 'Phone',
+          ),
+          enabled: true,
+          showFlagInInput: true,
+          validator: _getValidator(),
+          autovalidateMode: AutovalidateMode.onUserInteraction,
+          cursorColor: Theme.of(context).colorScheme.primary,
+          // ignore: avoid_print
+          onSaved: (p) => print('saved $p'),
+          // ignore: avoid_print
+          onChanged: (p) => print('changed $p'),
+          isCountryChipPersistent: isCountryChipPersistent,
         ),
-        enabled: true,
-        showFlagInInput: true,
-        validator: _getValidator(),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        cursorColor: Theme.of(context).colorScheme.primary,
-        // ignore: avoid_print
-        onSaved: (p) => print('saved $p'),
-        // ignore: avoid_print
-        onChanged: (p) => print('changed $p'),
       ),
     );
   }
@@ -89,11 +93,15 @@ class MyApp extends StatelessWidget {
       ],
       supportedLocales: const [
         Locale('en', ''),
-        Locale('es', ''),
-        Locale('de', ''),
         Locale('fr', ''),
+        Locale('es', ''),
+        Locale('el', ''),
+        Locale('de', ''),
         Locale('it', ''),
         Locale('ru', ''),
+        Locale('sv', ''),
+        Locale('tr', ''),
+        Locale('zh', ''),
         // ...
       ],
       title: 'Phone field demo',
@@ -110,16 +118,17 @@ class PhoneFormFieldScreen extends StatefulWidget {
   const PhoneFormFieldScreen({Key? key}) : super(key: key);
 
   @override
-  _PhoneFormFieldScreenState createState() => _PhoneFormFieldScreenState();
+  PhoneFormFieldScreenState createState() => PhoneFormFieldScreenState();
 }
 
-class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
+class PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
   late PhoneController controller;
   bool outlineBorder = true;
   bool mobileOnly = true;
   bool shouldFormat = true;
-  bool required = false;
+  bool isCountryChipPersistent = false;
   bool withLabel = true;
+  bool useRtl = false;
   CountrySelectorNavigator selectorNavigator =
       const CountrySelectorNavigator.searchDelegate();
   final formKey = GlobalKey<FormState>();
@@ -165,9 +174,10 @@ class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                       title: const Text('Label'),
                     ),
                     SwitchListTile(
-                      value: required,
-                      onChanged: (v) => setState(() => required = v),
-                      title: const Text('Required'),
+                      value: isCountryChipPersistent,
+                      onChanged: (v) =>
+                          setState(() => isCountryChipPersistent = v),
+                      title: const Text('Persistent country chip'),
                     ),
                     SwitchListTile(
                       value: mobileOnly,
@@ -178,6 +188,13 @@ class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                       value: shouldFormat,
                       onChanged: (v) => setState(() => shouldFormat = v),
                       title: const Text('Should format'),
+                    ),
+                    SwitchListTile(
+                      value: useRtl,
+                      onChanged: (v) {
+                        setState(() => useRtl = v);
+                      },
+                      title: const Text('RTL'),
                     ),
                     ListTile(
                       title: Wrap(
@@ -194,29 +211,30 @@ class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                             },
                             items: const [
                               DropdownMenuItem(
-                                child: Text('Bottom sheet'),
                                 value: CountrySelectorNavigator.bottomSheet(),
+                                child: Text('Bottom sheet'),
                               ),
                               DropdownMenuItem(
-                                child: Text('Draggable modal sheet'),
                                 value: CountrySelectorNavigator
                                     .draggableBottomSheet(),
+                                child: Text('Draggable modal sheet'),
                               ),
                               DropdownMenuItem(
-                                child: Text('Modal sheet'),
                                 value:
                                     CountrySelectorNavigator.modalBottomSheet(
                                   favorites: [IsoCode.US, IsoCode.BE],
                                 ),
+                                child: Text('Modal sheet'),
                               ),
                               DropdownMenuItem(
+                                value:
+                                    CountrySelectorNavigator.dialog(width: 720),
                                 child: Text('Dialog'),
-                                value: CountrySelectorNavigator.dialog(),
                               ),
                               DropdownMenuItem(
-                                child: Text('Page'),
                                 value:
                                     CountrySelectorNavigator.searchDelegate(),
+                                child: Text('Page'),
                               ),
                             ],
                           ),
@@ -232,9 +250,10 @@ class _PhoneFormFieldScreenState extends State<PhoneFormFieldScreen> {
                         selectorNavigator: selectorNavigator,
                         withLabel: withLabel,
                         outlineBorder: outlineBorder,
-                        required: required,
+                        isCountryChipPersistent: isCountryChipPersistent,
                         mobileOnly: mobileOnly,
                         shouldFormat: shouldFormat,
+                        useRtl: useRtl,
                       ),
                     ),
                     const SizedBox(height: 12),

@@ -11,6 +11,8 @@ abstract class CountrySelectorNavigator {
   final bool sortCountries;
   final String? noResultMessage;
   final bool searchAutofocus;
+  final TextStyle? subtitleStyle;
+  final TextStyle? titleStyle;
 
   const CountrySelectorNavigator({
     this.countries,
@@ -20,6 +22,8 @@ abstract class CountrySelectorNavigator {
     this.sortCountries = false,
     this.noResultMessage,
     required this.searchAutofocus,
+    this.subtitleStyle,
+    this.titleStyle,
   });
 
   Future<Country?> navigate(BuildContext context);
@@ -37,10 +41,14 @@ abstract class CountrySelectorNavigator {
       noResultMessage: noResultMessage,
       scrollController: scrollController,
       searchAutofocus: searchAutofocus,
+      subtitleStyle: subtitleStyle,
+      titleStyle: titleStyle,
     );
   }
 
   const factory CountrySelectorNavigator.dialog({
+    double? height,
+    double? width,
     List<IsoCode>? countries,
     List<IsoCode>? favorites,
     bool addSeparator,
@@ -68,6 +76,8 @@ abstract class CountrySelectorNavigator {
     bool sortCountries,
     String? noResultMessage,
     bool searchAutofocus,
+    TextStyle? subtitleStyle,
+    TextStyle? titleStyle,
   }) = BottomSheetNavigator._;
 
   const factory CountrySelectorNavigator.modalBottomSheet({
@@ -97,7 +107,12 @@ abstract class CountrySelectorNavigator {
 }
 
 class DialogNavigator extends CountrySelectorNavigator {
+  final double? height;
+  final double? width;
+
   const DialogNavigator._({
+    this.width,
+    this.height,
     List<IsoCode>? countries,
     List<IsoCode>? favorites,
     bool addSeparator = true,
@@ -120,8 +135,12 @@ class DialogNavigator extends CountrySelectorNavigator {
     return showDialog(
       context: context,
       builder: (_) => Dialog(
-        child: _getCountrySelector(
-          onCountrySelected: (country) => Navigator.pop(context, country),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: _getCountrySelector(
+            onCountrySelected: (country) => Navigator.pop(context, country),
+          ),
         ),
       ),
     );
@@ -184,14 +203,19 @@ class BottomSheetNavigator extends CountrySelectorNavigator {
     bool sortCountries = false,
     String? noResultMessage,
     bool searchAutofocus = kIsWeb,
+    TextStyle? subtitleStyle,
+    TextStyle? titleStyle,
   }) : super(
-            countries: countries,
-            favorites: favorites,
-            addSeparator: addSeparator,
-            showCountryCode: showCountryCode,
-            sortCountries: sortCountries,
-            noResultMessage: noResultMessage,
-            searchAutofocus: searchAutofocus);
+          countries: countries,
+          favorites: favorites,
+          addSeparator: addSeparator,
+          showCountryCode: showCountryCode,
+          sortCountries: sortCountries,
+          noResultMessage: noResultMessage,
+          searchAutofocus: searchAutofocus,
+          subtitleStyle: subtitleStyle,
+          titleStyle: titleStyle,
+        );
 
   @override
   Future<Country?> navigate(BuildContext context) {

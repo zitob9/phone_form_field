@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:phone_form_field/src/constants/constants.dart';
 import 'package:phone_form_field/src/models/phone_field_controller.dart';
-import 'package:phone_form_field/src/widgets/measure_initial_size.dart';
 
 import '../../phone_form_field.dart';
 
@@ -19,6 +18,8 @@ class PhoneField extends StatefulWidget {
   final String? errorText;
   final double flagSize;
   final InputDecoration decoration;
+  final bool isCountrySelectionEnabled;
+  final bool isCountryChipPersistent;
 
   /// configures the way the country picker selector is shown
   final CountrySelectorNavigator selectorNavigator;
@@ -31,7 +32,6 @@ class PhoneField extends StatefulWidget {
   final StrutStyle? strutStyle;
   final TextAlign textAlign;
   final TextAlignVertical? textAlignVertical;
-  final TextDirection? textDirection;
   final bool autofocus;
   final String obscuringCharacter;
   final bool obscureText;
@@ -62,6 +62,7 @@ class PhoneField extends StatefulWidget {
   final Iterable<String>? autofillHints;
   final String? restorationId;
   final bool enableIMEPersonalizedLearning;
+  final List<TextInputFormatter>? inputFormatters;
 
   const PhoneField({
     // form field params
@@ -72,6 +73,8 @@ class PhoneField extends StatefulWidget {
     required this.flagSize,
     required this.errorText,
     required this.decoration,
+    required this.isCountrySelectionEnabled,
+    required this.isCountryChipPersistent,
     // textfield  inputs
     required this.keyboardType,
     required this.textInputAction,
@@ -80,7 +83,6 @@ class PhoneField extends StatefulWidget {
     required this.strutStyle,
     required this.textAlign,
     required this.textAlignVertical,
-    required this.textDirection,
     required this.autofocus,
     required this.obscuringCharacter,
     required this.obscureText,
@@ -110,8 +112,9 @@ class PhoneField extends StatefulWidget {
     required this.autofillHints,
     required this.restorationId,
     required this.enableIMEPersonalizedLearning,
+    required this.inputFormatters,
   }) : super(key: key);
 
   @override
-  _PhoneFieldState createState() => _PhoneFieldState();
+  PhoneFieldState createState() => PhoneFieldState();
 }

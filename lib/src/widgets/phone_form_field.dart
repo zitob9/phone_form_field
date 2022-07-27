@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:phone_form_field/src/constants/constants.dart';
 import 'package:phone_form_field/src/helpers/validator_translator.dart';
 import 'package:phone_form_field/src/models/phone_field_controller.dart';
-import 'package:phone_form_field/src/models/phone_form_field_controller.dart';
+import 'package:phone_form_field/src/models/phone_controller.dart';
 import 'package:phone_form_field/src/validator/phone_validator.dart';
 import 'package:phone_form_field/src/widgets/phone_field.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart';
@@ -112,6 +112,8 @@ class PhoneFormField extends FormField<PhoneNumber> {
     PhoneNumber? initialValue,
     double flagSize = 16,
     PhoneNumberInputValidator? validator,
+    bool isCountrySelectionEnabled = true,
+    bool isCountryChipPersistent = false,
     // textfield inputs
     TextInputType keyboardType = TextInputType.phone,
     TextInputAction? textInputAction,
@@ -120,7 +122,6 @@ class PhoneFormField extends FormField<PhoneNumber> {
     StrutStyle? strutStyle,
     TextAlign textAlign = TextAlign.start,
     TextAlignVertical? textAlignVertical,
-    TextDirection? textDirection,
     bool autofocus = false,
     String obscuringCharacter = '*',
     bool obscureText = false,
@@ -165,7 +166,7 @@ class PhoneFormField extends FormField<PhoneNumber> {
           validator: validator ?? PhoneValidator.valid(),
           restorationId: restorationId,
           builder: (state) {
-            final field = state as _PhoneFormFieldState;
+            final field = state as PhoneFormFieldState;
             return PhoneField(
               controller: field._childController,
               showFlagInInput: showFlagInInput,
@@ -174,6 +175,8 @@ class PhoneFormField extends FormField<PhoneNumber> {
               flagSize: flagSize,
               decoration: decoration,
               enabled: enabled,
+              isCountrySelectionEnabled: isCountrySelectionEnabled,
+              isCountryChipPersistent: isCountryChipPersistent,
               // textfield params
               autofillHints: autofillHints,
               keyboardType: keyboardType,
@@ -183,7 +186,6 @@ class PhoneFormField extends FormField<PhoneNumber> {
               strutStyle: strutStyle,
               textAlign: textAlign,
               textAlignVertical: textAlignVertical,
-              textDirection: textDirection,
               autofocus: autofocus,
               obscuringCharacter: obscuringCharacter,
               obscureText: obscureText,
@@ -211,10 +213,11 @@ class PhoneFormField extends FormField<PhoneNumber> {
               scrollPhysics: scrollPhysics,
               restorationId: restorationId,
               enableIMEPersonalizedLearning: enableIMEPersonalizedLearning,
+              inputFormatters: inputFormatters,
             );
           },
         );
 
   @override
-  _PhoneFormFieldState createState() => _PhoneFormFieldState();
+  PhoneFormFieldState createState() => PhoneFormFieldState();
 }
